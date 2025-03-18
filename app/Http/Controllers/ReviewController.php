@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
@@ -12,7 +13,8 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        //
+        $reviews = Review::latest()->paginate(10);
+        return view('reviews.index', compact('reviews'));
     }
 
     /**
@@ -20,7 +22,7 @@ class ReviewController extends Controller
      */
     public function create()
     {
-        //
+        return view('reviews.create');
     }
 
     /**
@@ -28,7 +30,21 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'rating' => 'required|numeric|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $review = new Review();
+        $review->user_id = Auth::id();
+        $review->product_id = $request->product_id;
+        $review->rating = $request->rating;
+        $review->comment = $request->comment;
+        $review->save();
+
+        return redirect()->route('reviews.index')
+            ->with('success', 'Review created successfully.');
     }
 
     /**
@@ -36,7 +52,7 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
-        //
+        return view('reviews.show', compact('review'));
     }
 
     /**
@@ -44,7 +60,13 @@ class ReviewController extends Controller
      */
     public function edit(Review $review)
     {
-        //
+        // Check if user owns this review
+        if (Auth::id() !== $review->user_id) {
+            return redirect()->route('reviews.index')
+                ->with('error', 'You can only edit your own reviews.');
+        }
+        
+        return view('reviews.edit', compact('review'));
     }
 
     /**
@@ -52,7 +74,23 @@ class ReviewController extends Controller
      */
     public function update(Request $request, Review $review)
     {
-        //
+        // Check if user owns this review
+        if (Auth::id() !== $review->user_id) {
+            return redirect()->route('reviews.index')
+                ->with('error', 'You can only update your own reviews.');
+        }
+
+        $request->validate([
+            'rating' => 'required|numeric|min:1|max:5',
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $review->rating = $request->rating;
+        $review->comment = $request->comment;
+        $review->save();
+
+        return redirect()->route('reviews.index')
+            ->with('success', 'Review updated successfully.');
     }
 
     /**
@@ -60,6 +98,15 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
-        //
+        // Check if user owns this review or is admin
+        if (Auth::id() !== $review->user_id && !Auth::user()->isAdmin()) {
+            return redirect()->route('reviews.index')
+                ->with('error', 'You can only delete your own reviews.');
+        }
+        
+        $review->delete();
+
+        return redirect()->route('reviews.index')
+            ->with('success', 'Review deleted successfully.');
     }
 }

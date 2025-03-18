@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProductAttributeValue;
+use App\Models\ProductAttribute;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductAttributeValueController extends Controller
@@ -12,7 +14,8 @@ class ProductAttributeValueController extends Controller
      */
     public function index()
     {
-        //
+        $attributeValues = ProductAttributeValue::with(['product', 'attribute'])->paginate(10);
+        return view('product-attribute-values.index', compact('attributeValues'));
     }
 
     /**
@@ -20,7 +23,9 @@ class ProductAttributeValueController extends Controller
      */
     public function create()
     {
-        //
+        $products = Product::all();
+        $attributes = ProductAttribute::all();
+        return view('product-attribute-values.create', compact('products', 'attributes'));
     }
 
     /**
@@ -28,7 +33,16 @@ class ProductAttributeValueController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'product_attribute_id' => 'required|exists:product_attributes,id',
+            'value' => 'required|string|max:255',
+        ]);
+
+        ProductAttributeValue::create($validated);
+
+        return redirect()->route('product-attribute-values.index')
+            ->with('success', 'Product attribute value created successfully.');
     }
 
     /**
@@ -36,7 +50,7 @@ class ProductAttributeValueController extends Controller
      */
     public function show(ProductAttributeValue $productAttributeValue)
     {
-        //
+        return view('product-attribute-values.show', compact('productAttributeValue'));
     }
 
     /**
@@ -44,7 +58,9 @@ class ProductAttributeValueController extends Controller
      */
     public function edit(ProductAttributeValue $productAttributeValue)
     {
-        //
+        $products = Product::all();
+        $attributes = ProductAttribute::all();
+        return view('product-attribute-values.edit', compact('productAttributeValue', 'products', 'attributes'));
     }
 
     /**
@@ -52,7 +68,16 @@ class ProductAttributeValueController extends Controller
      */
     public function update(Request $request, ProductAttributeValue $productAttributeValue)
     {
-        //
+        $validated = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'product_attribute_id' => 'required|exists:product_attributes,id',
+            'value' => 'required|string|max:255',
+        ]);
+
+        $productAttributeValue->update($validated);
+
+        return redirect()->route('product-attribute-values.index')
+            ->with('success', 'Product attribute value updated successfully.');
     }
 
     /**
@@ -60,6 +85,9 @@ class ProductAttributeValueController extends Controller
      */
     public function destroy(ProductAttributeValue $productAttributeValue)
     {
-        //
+        $productAttributeValue->delete();
+
+        return redirect()->route('product-attribute-values.index')
+            ->with('success', 'Product attribute value deleted successfully.');
     }
 }

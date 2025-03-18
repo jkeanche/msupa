@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class OrderItemController extends Controller
 {
@@ -12,7 +13,8 @@ class OrderItemController extends Controller
      */
     public function index()
     {
-        //
+        $orderItems = OrderItem::with('order', 'product')->get();
+        return response()->json(['data' => $orderItems]);
     }
 
     /**
@@ -20,7 +22,8 @@ class OrderItemController extends Controller
      */
     public function create()
     {
-        //
+        // This method isn't typically used in API controllers
+        return response()->json(['message' => 'Method not implemented for API']);
     }
 
     /**
@@ -28,7 +31,19 @@ class OrderItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'required|exists:orders,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+            'unit_price' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $orderItem = OrderItem::create($request->all());
+        return response()->json(['message' => 'Order item created successfully', 'data' => $orderItem], 201);
     }
 
     /**
@@ -36,7 +51,8 @@ class OrderItemController extends Controller
      */
     public function show(OrderItem $orderItem)
     {
-        //
+        $orderItem->load('order', 'product');
+        return response()->json(['data' => $orderItem]);
     }
 
     /**
@@ -44,7 +60,8 @@ class OrderItemController extends Controller
      */
     public function edit(OrderItem $orderItem)
     {
-        //
+        // This method isn't typically used in API controllers
+        return response()->json(['message' => 'Method not implemented for API']);
     }
 
     /**
@@ -52,7 +69,19 @@ class OrderItemController extends Controller
      */
     public function update(Request $request, OrderItem $orderItem)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'order_id' => 'sometimes|exists:orders,id',
+            'product_id' => 'sometimes|exists:products,id',
+            'quantity' => 'sometimes|integer|min:1',
+            'unit_price' => 'sometimes|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $orderItem->update($request->all());
+        return response()->json(['message' => 'Order item updated successfully', 'data' => $orderItem]);
     }
 
     /**
@@ -60,6 +89,7 @@ class OrderItemController extends Controller
      */
     public function destroy(OrderItem $orderItem)
     {
-        //
+        $orderItem->delete();
+        return response()->json(['message' => 'Order item deleted successfully'], 200);
     }
 }

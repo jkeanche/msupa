@@ -12,7 +12,8 @@ class ProductAttributeController extends Controller
      */
     public function index()
     {
-        //
+        $attributes = ProductAttribute::all();
+        return view('product-attributes.index', compact('attributes'));
     }
 
     /**
@@ -20,7 +21,7 @@ class ProductAttributeController extends Controller
      */
     public function create()
     {
-        //
+        return view('product-attributes.create');
     }
 
     /**
@@ -28,7 +29,16 @@ class ProductAttributeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:product_attributes',
+            'values' => 'nullable|string',
+            'type' => 'required|string|in:select,radio,checkbox,text,textarea',
+        ]);
+
+        ProductAttribute::create($validated);
+
+        return redirect()->route('product-attributes.index')
+            ->with('success', 'Product attribute created successfully.');
     }
 
     /**
@@ -36,7 +46,7 @@ class ProductAttributeController extends Controller
      */
     public function show(ProductAttribute $productAttribute)
     {
-        //
+        return view('product-attributes.show', compact('productAttribute'));
     }
 
     /**
@@ -44,7 +54,7 @@ class ProductAttributeController extends Controller
      */
     public function edit(ProductAttribute $productAttribute)
     {
-        //
+        return view('product-attributes.edit', compact('productAttribute'));
     }
 
     /**
@@ -52,7 +62,16 @@ class ProductAttributeController extends Controller
      */
     public function update(Request $request, ProductAttribute $productAttribute)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:product_attributes,name,' . $productAttribute->id,
+            'values' => 'nullable|string',
+            'type' => 'required|string|in:select,radio,checkbox,text,textarea',
+        ]);
+
+        $productAttribute->update($validated);
+
+        return redirect()->route('product-attributes.index')
+            ->with('success', 'Product attribute updated successfully.');
     }
 
     /**
@@ -60,6 +79,9 @@ class ProductAttributeController extends Controller
      */
     public function destroy(ProductAttribute $productAttribute)
     {
-        //
+        $productAttribute->delete();
+
+        return redirect()->route('product-attributes.index')
+            ->with('success', 'Product attribute deleted successfully.');
     }
 }

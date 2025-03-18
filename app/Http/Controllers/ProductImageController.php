@@ -4,23 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductImageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
     public function index()
     {
-        //
+        $images = ProductImage::all();
+        return view('product_images.index', compact('images'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
+    /**
+     * Show the form for creating a new product image.
+     */
     public function create()
     {
-        //
+        return view('product_images.create');
     }
 
     /**
@@ -28,7 +31,20 @@ class ProductImageController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'image' => 'required|image|max:2048', // 2MB max
+        ]);
+
+        $path = $request->file('image')->store('product_images', 'public');
+
+        $productImage = new ProductImage();
+        $productImage->product_id = $request->product_id;
+        $productImage->image_path = $path;
+        $productImage->save();
+
+        return redirect()->route('product_images.index')
+            ->with('success', 'Product image uploaded successfully');
     }
 
     /**
@@ -36,7 +52,7 @@ class ProductImageController extends Controller
      */
     public function show(ProductImage $productImage)
     {
-        //
+        return view('product_images.show', compact('productImage'));
     }
 
     /**
@@ -44,7 +60,7 @@ class ProductImageController extends Controller
      */
     public function edit(ProductImage $productImage)
     {
-        //
+        return view('product_images.edit', compact('productImage'));
     }
 
     /**
@@ -52,7 +68,26 @@ class ProductImageController extends Controller
      */
     public function update(Request $request, ProductImage $productImage)
     {
-        //
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'image' => 'nullable|image|max:2048', // 2MB max
+        ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if ($productImage->image_path) {
+                Storage::disk('public')->delete($productImage->image_path);
+            }
+            // Store new image
+            $path = $request->file('image')->store('product_images', 'public');
+            $productImage->image_path = $path;
+        }
+
+        $productImage->product_id = $request->product_id;
+        $productImage->save();
+
+        return redirect()->route('product_images.index')
+            ->with('success', 'Product image updated successfully');
     }
 
     /**
@@ -60,6 +95,15 @@ class ProductImageController extends Controller
      */
     public function destroy(ProductImage $productImage)
     {
-        //
+        // Delete the image file from storage
+        if ($productImage->image_path) {
+            Storage::disk('public')->delete($productImage->image_path);
+        }
+        
+        // Delete the record
+        $productImage->delete();
+
+        return redirect()->route('product_images.index')
+            ->with('success', 'Product image deleted successfully');
     }
 }

@@ -12,7 +12,8 @@ class OrderStatusController extends Controller
      */
     public function index()
     {
-        //
+        $orderStatuses = OrderStatus::all();
+        return view('order_statuses.index', compact('orderStatuses'));
     }
 
     /**
@@ -20,7 +21,7 @@ class OrderStatusController extends Controller
      */
     public function create()
     {
-        //
+        return view('order_statuses.create');
     }
 
     /**
@@ -28,7 +29,15 @@ class OrderStatusController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255|unique:order_statuses',
+            'description' => 'nullable|string',
+        ]);
+
+        OrderStatus::create($request->all());
+        
+        return redirect()->route('order-statuses.index')
+            ->with('success', 'Order status created successfully.');
     }
 
     /**
@@ -36,7 +45,7 @@ class OrderStatusController extends Controller
      */
     public function show(OrderStatus $orderStatus)
     {
-        //
+        return view('order_statuses.show', compact('orderStatus'));
     }
 
     /**
@@ -44,7 +53,7 @@ class OrderStatusController extends Controller
      */
     public function edit(OrderStatus $orderStatus)
     {
-        //
+        return view('order_statuses.edit', compact('orderStatus'));
     }
 
     /**
@@ -52,7 +61,15 @@ class OrderStatusController extends Controller
      */
     public function update(Request $request, OrderStatus $orderStatus)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255|unique:order_statuses,name,' . $orderStatus->id,
+            'description' => 'nullable|string',
+        ]);
+
+        $orderStatus->update($request->all());
+        
+        return redirect()->route('order-statuses.index')
+            ->with('success', 'Order status updated successfully.');
     }
 
     /**
@@ -60,6 +77,9 @@ class OrderStatusController extends Controller
      */
     public function destroy(OrderStatus $orderStatus)
     {
-        //
+        $orderStatus->delete();
+        
+        return redirect()->route('order-statuses.index')
+            ->with('success', 'Order status deleted successfully.');
     }
 }
