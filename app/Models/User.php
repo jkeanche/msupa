@@ -2,25 +2,25 @@
 // app/Models/User.php
 namespace App\Models;
 
-use Bavix\Wallet\Interfaces\Wallet;
-use Bavix\Wallet\Traits\HasWallet;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements Wallet
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasWallet;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
         'email',
         'password',
-        'user_type',
+        'role', // admin, supermarket_owner, customer
         'phone',
-        'profile_image',
         'address',
+        'profile_picture',
+        'is_active',
     ];
 
     protected $hidden = [
@@ -31,41 +31,37 @@ class User extends Authenticatable implements Wallet
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_active' => 'boolean',
     ];
 
-    public function store()
+    public function isAdmin()
     {
-        return $this->hasOne(Store::class);
+        return $this->role === 'admin';
+    }
+
+    public function isSupermarketOwner()
+    {
+        return $this->role === 'supermarket_owner';
+    }
+
+    public function isCustomer()
+    {
+        return $this->role === 'customer';
+    }
+
+    public function supermarket()
+    {
+        return $this->hasOne(Supermarket::class, 'owner_id');
     }
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'customer_id');
     }
 
-    public function reviews()
+    public function notifications()
     {
-        return $this->hasMany(Review::class);
-    }
-
-    public function withdrawalRequests()
-    {
-        return $this->hasMany(WithdrawalRequest::class);
-    }
-
-    public function isAdmin()
-    {
-        return $this->user_type === 'admin';
-    }
-
-    public function isVendor()
-    {
-        return $this->user_type === 'vendor';
-    }
-
-    public function isUser()
-    {
-        return $this->user_type === 'user';
+        return $this->morphMany(Notification::class, 'notifiable');
     }
 }
 

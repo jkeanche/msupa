@@ -1,0 +1,157 @@
+m-Supa - SaaS E-commerce System Requirements Document
+
+1. Introduction
+
+1.1 Purpose
+
+m-Supa is a SaaS-based eCommerce platform designed for supermarkets to create and manage their online stores. The system will allow supermarket owners to list products, manage inventory, process orders, handle subscriptions, feature products, and integrate payments. It will also support multi-user roles, extensive notifications, and detailed reporting.
+
+1.2 Scope
+
+The system will provide a fully functional online platform that enables supermarkets to operate online stores efficiently. It will be developed using Laravel for the backend and Laravel Blade with Tailwind CSS for the frontend.
+
+2. System Features
+
+2.1 User Management
+
+Multi-role user management:
+
+Admin: Manages subscriptions, payments, reports, and platform-wide settings.
+
+Supermarket Owners: Manage their stores, products, inventory, orders, and customers.
+
+Customers: Browse products, place orders, and track deliveries.
+
+Secure authentication and authorization with role-based access control.
+
+Profile management for all users.
+
+2.2 Store & Product Management
+
+Supermarket owners can create and configure their stores.
+
+CRUD operations for product listing.
+
+Categorization and tagging of products.
+
+Inventory tracking with low-stock alerts.
+
+Bulk import/export of products via CSV.
+
+Product search and filtering by category, price, brand, etc.
+
+2.3 Orders & Payments
+
+Customers can place orders and track them.
+
+Order status updates (Pending, Processing, Shipped, Delivered, Cancelled).
+
+Automated invoicing for customers and supermarket owners.
+
+Integration with Sasapay for secure payments.
+
+Payment history and transaction records.
+
+2.4 Subscription Management
+
+Supermarket owners subscribe to different packages.
+
+Packages determine the number of products, store features, and ad placements.
+
+Auto-renewal and expiry reminders.
+
+Sasapay integration for subscription fee payments.
+
+2.5 Featured Products & Paid Advertisements
+
+Owners can pay to feature products for a limited time.
+
+Automatic removal of featured products after expiry.
+
+Paid banner ads on the homepage.
+
+2.6 Discounts & Coupons
+
+Supermarket owners can create discount coupons.
+
+Coupons can be limited to specific products or categories.
+
+Customers can apply coupons at checkout.
+
+2.7 Notifications & Alerts
+
+Email and in-app notifications for orders, payments, and system updates.
+
+Subscription renewal reminders.
+
+Stock alerts for low inventory.
+
+2.8 Reporting & Analytics
+
+Sales reports for supermarket owners.
+
+Subscription revenue analytics for admin.
+
+Customer order history and spending trends.
+
+Exportable reports in CSV/PDF.
+
+2.9 Search & Filtering
+
+Advanced search by product name, category, brand, and price.
+
+Filters for promotions, availability, and new arrivals.
+
+2.10 Logistics & Delivery Management
+
+Delivery fee calculation based on location.
+
+Integration with third-party couriers.
+
+Order tracking for customers.
+
+3. Technical Requirements
+
+3.1 Technology Stack
+
+Frontend: Laravel Blade, Tailwind CSS
+
+Backend: Laravel (PHP)
+
+Database: MySQL / PostgreSQL
+
+Payment Integration: Sasapay
+
+Hosting: AWS / DigitalOcean
+
+3.2 Security
+
+Role-based access control (RBAC).
+
+Data encryption and secure storage.
+
+Protection against SQL injection, XSS, and CSRF attacks.
+
+3.3 Performance & Scalability
+
+Optimized database queries.
+
+Caching mechanisms for faster response times.
+
+Load balancing and autoscaling for high traffic.
+
+4. Deployment & Maintenance
+
+4.1 Deployment Process
+
+Version-controlled deployment via Git.
+
+CI/CD pipelines for automated testing and deployment.
+
+4.2 Maintenance & Support
+
+Regular security updates.
+
+Continuous performance monitoring.
+
+User support via ticketing system.

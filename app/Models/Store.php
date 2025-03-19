@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 use Bavix\Wallet\Interfaces\Wallet;
 use Bavix\Wallet\Traits\HasWallet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,6 +28,16 @@ class Store extends Model implements Wallet
         'email',
         'status',
         'commission_rate',
+        'owner_id',
+        'social_links',
+        'is_active',
+        'featured_until',
+    ];
+
+    protected $casts = [
+        'social_links' => 'array',
+        'is_active' => 'boolean',
+        'featured_until' => 'datetime',
     ];
 
     protected static function boot()
@@ -45,6 +54,11 @@ class Store extends Model implements Wallet
         return $this->belongsTo(User::class);
     }
 
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);
@@ -58,5 +72,25 @@ class Store extends Model implements Wallet
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function isFeatured()
+    {
+        return $this->featured_until && $this->featured_until->isFuture();
+    }
+
+    public function statistics()
+    {
+        return [
+            'total_products' => $this->products()->count(),
+            'total_orders' => $this->orders()->count(),
+            'total_sales' => $this->orders()->where('status', 'delivered')->sum('total'),
+            'pending_orders' => $this->orders()->where('status', 'pending')->count(),
+        ];
     }
 }
