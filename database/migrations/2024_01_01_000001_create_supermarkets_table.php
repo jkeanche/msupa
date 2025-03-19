@@ -1,3 +1,4 @@
+kets_table.php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -13,25 +14,20 @@ return new class extends Migration
     {
         Schema::create('supermarkets', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('logo')->nullable();
             $table->string('banner')->nullable();
-            $table->foreignId('owner_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('subscription_id')->nullable()->constrained('subscriptions')->nullOnDelete();
-            $table->string('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('state')->nullable();
-            $table->string('postal_code')->nullable();
-            $table->string('country')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
-            $table->string('website')->nullable();
+            $table->string('address')->nullable();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
             $table->boolean('is_active')->default(true);
-            $table->decimal('delivery_fee', 10, 2)->default(0);
-            $table->decimal('minimum_order_amount', 10, 2)->default(0);
-            $table->decimal('tax_rate', 5, 2)->default(0);
+            $table->boolean('is_verified')->default(false);
+            $table->timestamp('verified_at')->nullable();
             $table->timestamps();
         });
     }

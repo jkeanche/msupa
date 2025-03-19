@@ -25,6 +25,8 @@ return new class extends Migration
             
             // Ensure unique slug per supermarket
             $table->unique(['slug', 'supermarket_id']);
+            
+           
         });
     }
 

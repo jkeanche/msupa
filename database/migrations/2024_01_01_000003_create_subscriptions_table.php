@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('supermarket_id')->constrained()->onDelete('cascade');
             $table->foreignId('plan_id')->constrained();
             $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('end_date')->nullable();
             $table->enum('status', ['active', 'canceled', 'expired', 'pending'])->default('pending');
             $table->enum('payment_status', ['paid', 'unpaid', 'refunded'])->default('unpaid');
             $table->decimal('amount_paid', 10, 2)->default(0);

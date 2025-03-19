@@ -17,7 +17,9 @@ use App\Http\Controllers\User\WalletController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 
 // Public routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return view('home');
+})->name('home');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 
@@ -28,3 +30,12 @@ Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update
 Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::post('/cart/coupon', [CartController::class, 'applyCoupon'])->name('cart.coupon.apply');
 Route::delete('/cart/coupon', [CartController::class, 'removeCoupon'])->name('cart.coupon.remove');
+
+// Single route with middleware
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth');
+
+// Or for multiple routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
+    // Other routes that need this middleware
+});
