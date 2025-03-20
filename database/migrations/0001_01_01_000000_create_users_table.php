@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('phone', 20)->nullable();
             $table->text('address')->nullable();
             $table->string('profile_picture')->nullable();
-            $table->boolean('is_active')->default(true);;
+            $table->boolean('is_active')->default(true);
+            $table->unsignedBigInteger('store_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

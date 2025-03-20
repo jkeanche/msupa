@@ -23,8 +23,8 @@
                     <span class="ms-1">{{ auth()->user()->name }}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end">
-                    <a href="{{ route('admin.profile') }}" class="dropdown-item">My Profile</a>
-                    <a href="{{ route('admin.settings') }}" class="dropdown-item">Settings</a>
+                    <a href="#" class="dropdown-item">My Profile</a>
+                    <a href="{{ route('admin.settings.index') }}" class="dropdown-item">Settings</a>
                     <div class="dropdown-divider"></div>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf

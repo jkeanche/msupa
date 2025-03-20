@@ -23,9 +23,10 @@ return new class extends Migration
             $table->decimal('sale_price', 10, 2)->nullable();
             $table->integer('stock_quantity')->default(0);
             $table->string('sku', 100)->nullable();
-            $table->boolean('featured')->default(false);
+            $table->boolean('is_featured')->default(false);
             $table->enum('status', ['active', 'inactive', 'draft'])->default('draft');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

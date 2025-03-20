@@ -13,15 +13,15 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalUsers = User::where('user_type', 'user')->count();
-        $totalVendors = User::where('user_type', 'vendor')->count();
+        $totalUsers = User::where('role', 'user')->count();
+        $totalVendors = User::where('role', 'vendor')->count();
         $totalStores = Store::count();
         $totalProducts = Product::count();
         $totalOrders = Order::count();
         $totalSales = Order::where('payment_status', 'paid')->sum('total_amount');
         $recentOrders = Order::with(['user'])->latest()->take(10)->get();
 
-        return view('admin.dashboard', compact(
+        return view('admin.dashboard.index', compact(
             'totalUsers',
             'totalVendors',
             'totalStores',

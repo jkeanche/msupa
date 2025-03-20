@@ -73,7 +73,7 @@
                 <h5 class="card-title">Edit Profile Information</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.profile.update') }}" method="POST">
+                <form action="#" method="POST">
                     @csrf
                     @method('PUT')
                     
@@ -121,7 +121,7 @@
                 <h5 class="card-title">Change Password</h5>
             </div>
             <div class="card-body">
-                <form action="{{ route('admin.profile.password') }}" method="POST">
+                <form action="#" method="POST">
                     @csrf
                     @method('PUT')
                     
@@ -167,7 +167,7 @@
 <div class="modal fade" id="changeAvatarModal" tabindex="-1" aria-labelledby="changeAvatarModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form action="{{ route('admin.profile.avatar') }}" method="POST" enctype="multipart/form-data">
+            <form action="#" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 

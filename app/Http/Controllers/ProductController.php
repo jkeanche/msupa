@@ -30,8 +30,8 @@ class ProductController extends Controller
             $query = $supermarket->products();
         } 
         // For admins (viewing a specific supermarket's products)
-        elseif ($user->isAdmin() && $request->has('supermarket_id')) {
-            $supermarket = Supermarket::findOrFail($request->supermarket_id);
+        elseif ($user->isAdmin() && $request->has('store_id')) {
+            $supermarket = Supermarket::findOrFail($request->store_id);
             $query = $supermarket->products();
         } 
         // For admins (viewing all products)
@@ -160,8 +160,8 @@ class ProductController extends Controller
         // Create slug from name
         $validated['slug'] = Str::slug($validated['name']);
         
-        // Set supermarket_id
-        $validated['supermarket_id'] = $supermarket->id;
+        // Set store_id
+        $validated['store_id'] = $supermarket->id;
         
         // Create the product
         $product = Product::create($validated);

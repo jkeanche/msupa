@@ -13,18 +13,20 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->string('icon')->nullable();
+            $table->string('color')->nullable();
             $table->string('name');
             $table->string('slug');
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->foreignId('supermarket_id')->constrained('supermarkets')->onDelete('cascade');
+            $table->foreignId('store_id')->constrained('stores')->onDelete('cascade');
             $table->boolean('is_active')->default(true);
             $table->integer('display_order')->default(0);
             $table->timestamps();
             
             // Ensure unique slug per supermarket
-            $table->unique(['slug', 'supermarket_id']);
+            $table->unique(['slug', 'store_id']);
             
            
         });

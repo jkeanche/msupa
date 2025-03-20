@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Store;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class StoreController extends Controller
@@ -87,5 +88,24 @@ class StoreController extends Controller
 
         return redirect()->route('stores.index')
             ->with('success', 'Store deleted successfully.');
+    }
+
+    /**
+     * Display a list of featured stores
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function featured()
+    {
+        try {
+            $featuredStores = Store::where('is_featured', 1)->limit(6)->get();
+            return view('stores.featured', compact('featuredStores'));
+        } catch (QueryException $e) {
+            // If the column doesn't exist, show a message or return empty collection
+            if ($e->getCode() == '42S22') {
+                return view('stores.featured', ['featuredStores' => collect([])]);
+            }
+            throw $e;
+        }
     }
 }

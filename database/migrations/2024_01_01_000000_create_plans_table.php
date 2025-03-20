@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('featured_products')->default(false);
             $table->boolean('banner_ads')->default(false);
             $table->boolean('advanced_analytics')->default(false);
+            $table->boolean('is_featured')->default(false);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

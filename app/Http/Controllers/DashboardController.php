@@ -20,7 +20,8 @@ class DashboardController extends Controller
         // Admin dashboard stats
         $totalUsers = User::count();
         $totalStores = Store::count();
-        $totalSales = Transaction::where('status', 'completed')->sum('amount');
+        $totalSales = Transaction::query()->sum('amount');
+      
         $recentTransactions = Transaction::with('user')->orderBy('created_at', 'desc')->take(10)->get();
         $storesByMonth = Store::selectRaw('COUNT(*) as count, MONTH(created_at) as month')
             ->whereYear('created_at', date('Y'))
@@ -28,8 +29,10 @@ class DashboardController extends Controller
             ->get();
             
         $pendingOrders = Order::where('status', 'pending')->count();
+
+       
         
-        return view('dashboard.admin', compact(
+        return view('admin.dashboard.index', compact(
             'totalUsers', 
             'totalStores', 
             'totalSales', 

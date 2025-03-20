@@ -42,7 +42,7 @@
             </li>
             
             <li class="nav-item">
-                <a href="{{ route('admin.settings') }}" class="nav-link text-white {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                <a href="{{ route('admin.settings.index') }}" class="nav-link text-white {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                     <i class="fa fa-cog me-2"></i> Settings
                 </a>
             </li>

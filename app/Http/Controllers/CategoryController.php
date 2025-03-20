@@ -32,8 +32,8 @@ class CategoryController extends Controller
             return view('owner.categories.index', compact('categories', 'supermarket'));
         } 
         // For admins
-        elseif ($user->isAdmin() && $request->has('supermarket_id')) {
-            $supermarket = Supermarket::findOrFail($request->supermarket_id);
+        elseif ($user->isAdmin() && $request->has('store_id')) {
+            $supermarket = Supermarket::findOrFail($request->store_id);
             $categories = $supermarket->categories()->withCount('products')->orderBy('display_order')->get();
             return view('admin.categories.index', compact('categories', 'supermarket'));
         } 
@@ -110,8 +110,8 @@ class CategoryController extends Controller
             $validated['image'] = $path;
         }
         
-        // Set supermarket_id
-        $validated['supermarket_id'] = $supermarket->id;
+        // Set store_id
+        $validated['store_id'] = $supermarket->id;
         
         // Create category
         Category::create($validated);
@@ -161,7 +161,7 @@ class CategoryController extends Controller
         
         // Owner edit view
         if ($user->isSupermarketOwner() && $user->supermarket && 
-            $user->supermarket->id === $category->supermarket_id) {
+            $user->supermarket->id === $category->store_id) {
                 
             $parentCategories = $user->supermarket->categories()
                 ->where('id', '!=', $category->id)
@@ -194,7 +194,7 @@ class CategoryController extends Controller
         // Check authorization
         if (!($user->isAdmin() || 
             ($user->isSupermarketOwner() && $user->supermarket && 
-             $user->supermarket->id === $category->supermarket_id))) {
+             $user->supermarket->id === $category->store_id))) {
             return abort(403, 'Unauthorized action.');
         }
         
@@ -241,7 +241,7 @@ class CategoryController extends Controller
         $category->update($validated);
         
         if ($user->isAdmin()) {
-            return redirect()->route('admin.categories.index', ['supermarket_id' => $category->supermarket_id])
+            return redirect()->route('admin.categories.index', ['store_id' => $category->store_id])
                 ->with('success', 'Category updated successfully!');
         } else {
             return redirect()->route('owner.categories.index')
@@ -259,7 +259,7 @@ class CategoryController extends Controller
         // Check authorization
         if (!($user->isAdmin() || 
             ($user->isSupermarketOwner() && $user->supermarket && 
-             $user->supermarket->id === $category->supermarket_id))) {
+             $user->supermarket->id === $category->store_id))) {
             return abort(403, 'Unauthorized action.');
         }
         
@@ -300,7 +300,7 @@ class CategoryController extends Controller
             $category = Category::find($id);
             
             // Ensure the category belongs to the user's supermarket
-            if ($category && $category->supermarket_id === $supermarket->id) {
+            if ($category && $category->store_id === $supermarket->id) {
                 $category->display_order = $index;
                 $category->save();
             }

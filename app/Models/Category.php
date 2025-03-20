@@ -17,12 +17,11 @@ class Category extends Model
     protected $fillable = [
         'name',
         'slug',
+        'icon',
         'description',
-        'image',
         'parent_id',
-        'supermarket_id',
         'is_active',
-        'display_order',
+        'store_id',
     ];
 
     /**
@@ -41,14 +40,6 @@ class Category extends Model
         static::creating(function ($category) {
             $category->slug = $category->slug ?? Str::slug($category->name);
         });
-    }
-
-    /**
-     * Get the supermarket that owns the category
-     */
-    public function supermarket()
-    {
-        return $this->belongsTo(Supermarket::class);
     }
 
     /**
@@ -73,6 +64,14 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+    
+    /**
+     * Get the supermarket that owns the category
+     */
+    public function supermarket()
+    {
+        return $this->belongsTo(Supermarket::class);
     }
 
     /**
