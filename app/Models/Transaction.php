@@ -24,6 +24,8 @@ class Transaction extends Model
         'status', // pending, completed, failed
         'payment_method',
         'payment_id',
+        'checkout_request_id',
+        'merchant_request_id',
         'reference',
         'type', // order, subscription, feature
         'notes',
