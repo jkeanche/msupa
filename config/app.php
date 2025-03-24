@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'currency_symbol' => 'Ksh',  // Added currency symbol configuration
+
 ];

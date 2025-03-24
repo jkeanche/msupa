@@ -14,17 +14,18 @@
         }
     </style>
 </head>
-<body class="antialiased bg-gray-100">
+<body class="antialiased bg-gray-200">
     @include('partials.header')
     
     <main>
+        @include('partials.hero')
         <!-- Banners Section -->
-        <div class="my-6">
+        <div class="my-6 ">
             @include('components.banners')
         </div>
 
         <!-- Hero Section -->
-        @include('partials.hero')
+        @include('partials.welcome')
         @include('components.category-grid', ['categories' => $categories])
         @include('components.product-grid', ['id' => 'newArrivals', 'products' => $newArrivals, 'title' => 'Newly Listed', 'description' => 'Check out our new products that are trending this week.'])
         @include('components.product-grid', ['id' => 'featured', 'products' => $featuredProducts, 'title' => 'Featured Products', 'description' => 'Check out our featured products that are trending this week.'])

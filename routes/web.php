@@ -7,7 +7,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
-
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Vendor\DashboardController as VendorDashboardController;
 use App\Http\Controllers\Vendor\ProductController as VendorProductController;
@@ -17,17 +16,25 @@ use App\Http\Controllers\Vendor\WithdrawalController as VendorWithdrawalControll
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\User\WalletController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
-// use App\Http\Controllers\StoreController;
-// use App\Http\Controllers\CategoryController;
-
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\StoreController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\StoreController as AdminStoreController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\WithdrawalController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\BannerController;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
-// Route::resource('categories', 'CategoryController')->only(['index', 'show']);
-// Route::resource('stores', 'StoreController')->only(['index', 'show']);
+Route::resource('categories', CategoryController::class)->only(['index', 'show']);
+Route::resource('stores', StoreController::class)->only(['index', 'show']);
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
-// Route::get('/stores/featured', [StoreController::class, 'featured'])->name('stores.featured');
 
 // Cart routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -93,19 +100,46 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin routes
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
-
-        Route::resource('users', 'UserController');
-        Route::resource('stores', 'StoreController'); 
-        Route::resource('products', 'ProductController');
-        Route::resource('orders', 'OrderController');
-        Route::resource('coupons', 'CouponController');
-        Route::resource('withdrawals', 'WithdrawalController');
-        Route::resource('categories', 'CategoryController');
-        Route::resource('settings', 'SettingsController');
-        Route::resource('reports', 'ReportController');
-        Route::resource('notifications', 'NotificationController');
-        Route::resource('roles', 'RoleController');
-        Route::resource('banners', 'BannerController');
+        Route::resource('users', UserController::class);
+        Route::resource('stores', AdminStoreController::class); 
+        Route::resource('products', ProductController::class);
+        Route::resource('orders', OrderController::class);
+        Route::resource('coupons', CouponController::class);
+        Route::resource('withdrawals', WithdrawalController::class);
+        Route::resource('categories', CategoryController::class);
+        Route::resource('settings', SettingsController::class);
+        Route::resource('reports', ReportController::class);
+        Route::resource('notifications', NotificationController::class);
+        Route::resource('roles', RoleController::class);
+        Route::resource('banners', BannerController::class);
         // Add other admin routes as needed
     });
+});
+
+// Dashboard Routes
+Route::middleware(['auth'])->group(function () {
+    // Admin Routes
+    Route::group(['prefix' => 'admin', 'middleware' => ['admin'], 'as' => 'admin.'], function () {
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+    });
+
+    // Vendor Routes
+    Route::group(['prefix' => 'vendor', 'middleware' => ['vendor'], 'as' => 'vendor.'], function () {
+        Route::get('/dashboard', function () {
+            return view('vendor.dashboard');
+        })->name('dashboard');
+    });
+
+    // User Routes
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Profile Routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::resource('orders', OrderController::class);
 });

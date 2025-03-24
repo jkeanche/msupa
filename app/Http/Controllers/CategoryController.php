@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Supermarket;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -18,28 +18,43 @@ class CategoryController extends Controller
     {
         $user = Auth::user();
         
-        // For supermarket owners
+        // Public view - show only active categories
+        if (!$user) {
+            $categories = Category::where('is_active', true)
+                ->whereHas('store', function ($query) {
+                    $query->where('is_active', true);
+                })
+                ->withCount(['products' => function ($query) {
+                    $query->where('is_active', true);
+                }])
+                ->orderBy('display_order')
+                ->paginate(16);
+                
+            return view('categories.index', compact('categories'));
+        }
+        
+        // For store owners
         if ($user->isSupermarketOwner()) {
-            $supermarket = $user->supermarket;
+            $store = $user->store;
             
             // Check if they have an active subscription
-            if (!$supermarket || !$supermarket->subscription || !$supermarket->subscription->isActive()) {
+            if (!$store || !$store->subscription || !$store->subscription->isActive()) {
                 return redirect()->route('subscriptions.plans')
                     ->with('error', 'You need an active subscription to manage categories.');
             }
             
-            $categories = $supermarket->categories()->withCount('products')->orderBy('display_order')->get();
-            return view('owner.categories.index', compact('categories', 'supermarket'));
+            $categories = $store->categories()->withCount('products')->orderBy('display_order')->get();
+            return view('owner.categories.index', compact('categories', 'store'));
         } 
         // For admins
         elseif ($user->isAdmin() && $request->has('store_id')) {
-            $supermarket = Supermarket::findOrFail($request->store_id);
-            $categories = $supermarket->categories()->withCount('products')->orderBy('display_order')->get();
-            return view('admin.categories.index', compact('categories', 'supermarket'));
+            $store = Store::findOrFail($request->store_id);
+            $categories = $store->categories()->withCount('products')->orderBy('display_order')->get();
+            return view('admin.categories.index', compact('categories', 'store'));
         } 
         // For admins viewing all
         elseif ($user->isAdmin()) {
-            $categories = Category::with('supermarket')->withCount('products')->paginate(20);
+            $categories = Category::with('store')->withCount('products')->paginate(20);
             return view('admin.categories.index', compact('categories'));
         } 
         else {
@@ -55,15 +70,15 @@ class CategoryController extends Controller
         $user = Auth::user();
         
         if ($user->isSupermarketOwner()) {
-            $supermarket = $user->supermarket;
+            $store = $user->store;
             
             // Check if they have an active subscription
-            if (!$supermarket || !$supermarket->subscription || !$supermarket->subscription->isActive()) {
+            if (!$store || !$store->subscription || !$store->subscription->isActive()) {
                 return redirect()->route('subscriptions.plans')
                     ->with('error', 'You need an active subscription to add categories.');
             }
             
-            $parentCategories = $supermarket->categories()->whereNull('parent_id')->get();
+            $parentCategories = $store->categories()->whereNull('parent_id')->get();
             return view('owner.categories.create', compact('parentCategories'));
         } else {
             return abort(403, 'Unauthorized action.');
@@ -81,7 +96,7 @@ class CategoryController extends Controller
             return abort(403, 'Unauthorized action.');
         }
         
-        $supermarket = $user->supermarket;
+        $store = $user->store;
         
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -95,8 +110,8 @@ class CategoryController extends Controller
         // Create slug
         $validated['slug'] = Str::slug($validated['name']);
         
-        // Check if slug exists for this supermarket
-        $slugExists = $supermarket->categories()
+        // Check if slug exists for this store
+        $slugExists = $store->categories()
             ->where('slug', $validated['slug'])
             ->exists();
             
@@ -111,7 +126,7 @@ class CategoryController extends Controller
         }
         
         // Set store_id
-        $validated['store_id'] = $supermarket->id;
+        $validated['store_id'] = $store->id;
         
         // Create category
         Category::create($validated);
@@ -126,19 +141,19 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $user = Auth::user();
-        $supermarket = $category->supermarket;
+        $store = $category->store;
         
         // Public view for customers (if category is active)
-        if ($category->is_active && $supermarket->is_active) {
+        if ($category->is_active && $store->is_active) {
             $products = $category->products()
                 ->where('is_active', true)
                 ->paginate(16);
                 
-            return view('categories.show', compact('category', 'products', 'supermarket'));
+            return view('categories.show', compact('category', 'products', 'store'));
         }
         
         // Owner view
-        if ($user->isSupermarketOwner() && $user->supermarket && $user->supermarket->id === $supermarket->id) {
+        if ($user->isSupermarketOwner() && $user->store && $user->store->id === $store->id) {
             $products = $category->products()->paginate(20);
             return view('owner.categories.show', compact('category', 'products'));
         }
@@ -160,10 +175,10 @@ class CategoryController extends Controller
         $user = Auth::user();
         
         // Owner edit view
-        if ($user->isSupermarketOwner() && $user->supermarket && 
-            $user->supermarket->id === $category->store_id) {
+        if ($user->isSupermarketOwner() && $user->store && 
+            $user->store->id === $category->store_id) {
                 
-            $parentCategories = $user->supermarket->categories()
+            $parentCategories = $user->store->categories()
                 ->where('id', '!=', $category->id)
                 ->whereNull('parent_id')
                 ->get();
@@ -173,7 +188,7 @@ class CategoryController extends Controller
         
         // Admin edit view
         if ($user->isAdmin()) {
-            $parentCategories = $category->supermarket->categories()
+            $parentCategories = $category->store->categories()
                 ->where('id', '!=', $category->id)
                 ->whereNull('parent_id')
                 ->get();
@@ -193,8 +208,8 @@ class CategoryController extends Controller
         
         // Check authorization
         if (!($user->isAdmin() || 
-            ($user->isSupermarketOwner() && $user->supermarket && 
-             $user->supermarket->id === $category->store_id))) {
+            ($user->isSupermarketOwner() && $user->store && 
+             $user->store->id === $category->store_id))) {
             return abort(403, 'Unauthorized action.');
         }
         
@@ -216,8 +231,8 @@ class CategoryController extends Controller
         if ($category->name !== $validated['name']) {
             $validated['slug'] = Str::slug($validated['name']);
             
-            // Check if slug exists for this supermarket
-            $slugExists = $category->supermarket->categories()
+            // Check if slug exists for this store
+            $slugExists = $category->store->categories()
                 ->where('slug', $validated['slug'])
                 ->where('id', '!=', $category->id)
                 ->exists();
@@ -258,8 +273,8 @@ class CategoryController extends Controller
         
         // Check authorization
         if (!($user->isAdmin() || 
-            ($user->isSupermarketOwner() && $user->supermarket && 
-             $user->supermarket->id === $category->store_id))) {
+            ($user->isSupermarketOwner() && $user->store && 
+             $user->store->id === $category->store_id))) {
             return abort(403, 'Unauthorized action.');
         }
         
@@ -294,13 +309,13 @@ class CategoryController extends Controller
             'categories.*' => 'exists:categories,id',
         ]);
         
-        $supermarket = $user->supermarket;
+        $store = $user->store;
         
         foreach ($request->categories as $index => $id) {
             $category = Category::find($id);
             
-            // Ensure the category belongs to the user's supermarket
-            if ($category && $category->store_id === $supermarket->id) {
+            // Ensure the category belongs to the user's store
+            if ($category && $category->store_id === $store->id) {
                 $category->display_order = $index;
                 $category->save();
             }

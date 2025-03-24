@@ -32,6 +32,8 @@ class Store extends Model implements Wallet
         'social_links',
         'is_active',
         'featured_until',
+        'rating',
+        'rating_count'
     ];
 
     protected $casts = [
@@ -77,6 +79,21 @@ class Store extends Model implements Wallet
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function activeCategories()
+    {
+        return $this->categories()->where('is_active', true);
+    }
+
+    public function subscription()
+    {
+        return $this->hasOne(Subscription::class)->latest();
     }
 
     public function isFeatured()

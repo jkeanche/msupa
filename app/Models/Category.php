@@ -15,13 +15,16 @@ class Category extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'store_id',
+        'parent_id',
         'name',
         'slug',
-        'icon',
         'description',
-        'parent_id',
+        'image',
         'is_active',
-        'store_id',
+        'display_order',
+        'meta_title',
+        'meta_description',
     ];
 
     /**
@@ -67,11 +70,11 @@ class Category extends Model
     }
     
     /**
-     * Get the supermarket that owns the category
+     * Get the store that owns the category
      */
-    public function supermarket()
+    public function store()
     {
-        return $this->belongsTo(Supermarket::class);
+        return $this->belongsTo(Store::class);
     }
 
     /**
@@ -88,5 +91,21 @@ class Category extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('display_order');
+    }
+
+    /**
+     * Get the route key name for the model
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
+     * Scope a query to only include parent categories
+     */
+    public function scopeParents($query)
+    {
+        return $query->whereNull('parent_id');
     }
 }

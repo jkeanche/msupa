@@ -46,14 +46,14 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        // if ($user->role === 'admin') {
-        //     return redirect()->route('admin.dashboard');
-        // } elseif ($user->role === 'supermarket_owner') {
-        //     return redirect()->route('vendor.dashboard');
-        // }
-        return redirect()->route('admin.dashboard');
-        
-        return redirect()->route('home');
+        switch ($user->role) {
+            case 'admin':
+                return redirect()->route('admin.dashboard');
+            case 'supermarket_owner':
+                return redirect()->route('vendor.dashboard');
+            default:
+                return redirect()->route('dashboard');
+        }
     }
 
     /**

@@ -9,11 +9,20 @@ use Illuminate\Http\Request;
 class StoreController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of all active stores.
      */
     public function index()
     {
-        $stores = Store::all();
+        $stores = Store::where('is_active', true)
+            ->whereHas('subscription', function ($query) {
+                $query->where('status', 'active');
+            })
+            ->withCount(['products' => function ($query) {
+                $query->where('is_active', true);
+            }])
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
         return view('stores.index', compact('stores'));
     }
 
@@ -45,11 +54,27 @@ class StoreController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified store.
      */
     public function show(Store $store)
     {
-        return view('stores.show', compact('store'));
+        if (!$store->is_active) {
+            abort(404);
+        }
+
+        $products = $store->products()
+            ->where('is_active', true)
+            ->orderBy('created_at', 'desc')
+            ->paginate(16);
+
+        $categories = $store->categories()
+            ->where('is_active', true)
+            ->withCount(['products' => function ($query) {
+                $query->where('is_active', true);
+            }])
+            ->get();
+
+        return view('stores.show', compact('store', 'products', 'categories'));
     }
 
     /**
