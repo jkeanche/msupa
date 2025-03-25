@@ -119,7 +119,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Dashboard Routes
 Route::middleware(['auth'])->group(function () {
     // Admin Routes
-    Route::group(['prefix' => 'admin', 'middleware' => ['admin'], 'as' => 'admin.'], function () {
+    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/dashboard', function () {
             return view('admin.dashboard');
         })->name('dashboard');

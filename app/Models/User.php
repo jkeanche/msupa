@@ -41,18 +41,18 @@ class User extends Authenticatable implements MustVerifyEmail
      * @param string|array $roles
      * @return bool
      */
-    // public function hasRole($roles)
-    // {
-    //     if (is_string($roles)) {
-    //         return $this->role === $roles;
-    //     }
+    public function hasRole($roles)
+    {
+        if (is_string($roles)) {
+            return $this->role === $roles;
+        }
         
-    //     if (is_array($roles)) {
-    //         return in_array($this->role, $roles);
-    //     }
+        if (is_array($roles)) {
+            return in_array($this->role, $roles);
+        }
         
-    //     return false;
-    // }
+        return false;
+    }
 
     /**
      * Check if user has vendor role (alias for supermarket_owner)
