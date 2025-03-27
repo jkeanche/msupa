@@ -17,6 +17,8 @@
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     
+    @vite(['resources/css/app.css','resources/css/animation.css', 'resources/js/app.js'])
+    
     @livewireStyles
 </head>
 <body class="font-sans antialiased">

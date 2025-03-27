@@ -76,7 +76,7 @@ class ProductSeeder extends Seeder
         
         // Create products for each store with slight price variations
         foreach ($stores as $store) {
-            $isFeatured = false;
+            $isFeatured = rand(0, 1) === 1;
             $isNew = true;
             
             foreach ($productsByCategory as $categoryName => $products) {
@@ -94,12 +94,14 @@ class ProductSeeder extends Seeder
                 foreach ($products as $productData) {
                     // Add slight price variation for each store
                     $priceVariation = rand(-30, 50);
-                    $price = $productData['price'] + $priceVariation;
-                    $originalPrice = $productData['original_price'] + $priceVariation;
+                    $regularPrice = $productData['price'] + $priceVariation;
+                    $salePrice = $productData['original_price'] + $priceVariation;
                     
-                    // Ensure original price is always higher than price
-                    if ($price >= $originalPrice) {
-                        $originalPrice = $price + rand(10, 50);
+                    // Ensure sale price is always lower than regular price
+                    if ($salePrice >= $regularPrice) {
+                        $temp = $salePrice;
+                        $salePrice = $regularPrice - rand(10, 50);
+                        $regularPrice = $temp;
                     }
                     
                     // Select an appropriate image for the product category
@@ -113,19 +115,17 @@ class ProductSeeder extends Seeder
                         'slug' => Str::slug($productData['name'] . '-' . $store->name),
                         'description' => $productData['description'],
                         'short_description' => Str::limit($productData['description'], 100),
-                        'price' => $price, 
-                        'original_price' => $originalPrice,
+                        'regular_price' => $regularPrice, 
+                        'sale_price' => $salePrice,
                         'sku' => 'SKU-' . strtoupper(Str::random(8)),
-                        'quantity' => rand(10, 100),
+                        'stock_quantity' => rand(10, 100),
                         'is_featured' => $isFeatured,
-                        'is_new' => $isNew,
-                        'status' => 'available',
+                        'status' => rand(0, 10) > 2 ? 'active' : 'draft',
                         'image_url' => $imageUrl,
                     ]);
                     
-                    // Toggle featured and new status for variety
+                    // Toggle featured status for variety
                     $isFeatured = !$isFeatured;
-                    $isNew = !$isNew;
                 }
             }
         }
@@ -171,20 +171,19 @@ class ProductSeeder extends Seeder
             ],
             'Household' => [
                 'https://images.unsplash.com/photo-1626806787461-102c1a731d79',
-                'https://images.unsplash.com/photo-1563453392212-326f5e854473',
+                'https://images.unsplash.com/photo-1583947215259-38e31be8751f',
             ],
             'Personal Care' => [
-                'https://images.unsplash.com/photo-1556228578-215daa7b1b84',
-                'https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8',
+                'https://images.unsplash.com/photo-1556228578-0d85b1a4d571',
+                'https://images.unsplash.com/photo-1576426863848-c21f53c60b19',
             ],
         ];
         
-        // Return a specific category image if available, otherwise use a default
-        if (array_key_exists($categoryName, $images)) {
-            return $images[$categoryName][array_rand($images[$categoryName])];
-        }
+        $categoryImages = $images[$categoryName] ?? [
+            'https://images.unsplash.com/photo-1607082349566-187342175e2f', // Default grocery image
+            'https://images.unsplash.com/photo-1542838132-92c53300491e',
+        ];
         
-        // Default image if category not found in the array
-        return 'https://images.unsplash.com/photo-1607081692245-df6cc9c3bc97';
+        return $categoryImages[array_rand($categoryImages)];
     }
 }

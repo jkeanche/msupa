@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('sku', 100)->nullable();
             $table->boolean('is_featured')->default(false);
             $table->enum('status', ['active', 'inactive', 'draft'])->default('draft');
+            $table->string('image_url')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

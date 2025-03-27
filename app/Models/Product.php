@@ -16,21 +16,19 @@ class Product extends Model
         'slug',
         'description',
         'short_description',
-        'price',
-        'original_price',
+        'regular_price',
+        'sale_price',
         'sku',
-        'quantity',
+        'stock_quantity',
         'is_featured',
-        'is_new',
         'status',
         'image_url',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2',
-        'original_price' => 'decimal:2',
+        'regular_price' => 'decimal:2',
+        'sale_price' => 'decimal:2',
         'is_featured' => 'boolean',
-        'is_new' => 'boolean',
     ];
 
     protected static function boot()
@@ -50,5 +48,21 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+    
+    /**
+     * Get the order items for this product
+     */
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * Get the images for this product
+     */
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
     }
 }

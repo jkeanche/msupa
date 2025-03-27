@@ -22,10 +22,10 @@ class CategoryController extends Controller
         if (!$user) {
             $categories = Category::where('is_active', true)
                 ->whereHas('store', function ($query) {
-                    $query->where('is_active', true);
+                    $query->where('status', true);
                 })
                 ->withCount(['products' => function ($query) {
-                    $query->where('is_active', true);
+                    $query->where('status', true);
                 }])
                 ->orderBy('display_order')
                 ->paginate(16);
@@ -148,7 +148,7 @@ class CategoryController extends Controller
         // Public view for customers (if category is active)
         if ($category->is_active && $store->is_active) {
             $products = $category->products()
-                ->where('is_active', true)
+                ->where('status', true)
                 ->paginate(16);
                 
             return view('categories.show', compact('category', 'products', 'store'));

@@ -98,7 +98,7 @@
                             </dt>
                             <dd>
                                 <div class="text-lg font-semibold text-gray-900">
-                                    ${{ number_format($totalRevenue ?? 24680, 2) }}
+                                    Ksh.{{ number_format($totalRevenue ?? 24680, 2) }}
                                 </div>
                             </dd>
                         </dl>
@@ -175,7 +175,7 @@
                                     <tr>
                                         <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">#{{ $order->id }}</td>
                                         <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ $order->user->name }}</td>
-                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">${{ number_format($order->total, 2) }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">Ksh.{{ number_format($order->total, 2) }}</td>
                                         <td class="px-4 py-3 whitespace-nowrap">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                                 @if($order->status == 'completed') bg-green-100 text-green-800 
@@ -192,7 +192,7 @@
                                         <tr>
                                             <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">#{{ 1000 + $i }}</td>
                                             <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">Customer {{ $i }}</td>
-                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">${{ rand(50, 500) }}.00</td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">Ksh.{{ rand(50, 500) }}.00</td>
                                             <td class="px-4 py-3 whitespace-nowrap">
                                                 @php
                                                     $statuses = ['completed', 'processing', 'pending', 'cancelled'];

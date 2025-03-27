@@ -1,6 +1,6 @@
 @extends('vendor.layouts.app')
 
-@section('title', 'Vendor Dashboard')
+@section('title', 'Supermarket Vendor Dashboard')
 
 @section('content')
 <div class="container mx-auto px-4 py-6">

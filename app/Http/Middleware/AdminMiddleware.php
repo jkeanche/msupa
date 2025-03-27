@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
@@ -17,10 +18,14 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->hasRole('admin')) {
-            return $next($request);
+        if (!Auth::check()) {
+            return redirect()->route('login');
         }
-        
-        return redirect()->route('home')->with('error', 'You do not have admin access');
+
+        if (Auth::user()->role !== 'admin') {
+            return redirect()->route('home')->with('error', 'You do not have admin access');
+        }
+
+        return $next($request);
     }
 }

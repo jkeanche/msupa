@@ -16,7 +16,7 @@ class Subscription extends Model
      */
     protected $fillable = [
         'store_id',
-        'plan_id',
+        'subscription_plan_id',
         'start_date',
         'end_date',
         'status', // active, canceled, expired, pending

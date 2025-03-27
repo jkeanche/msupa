@@ -55,7 +55,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-center py-4">${{ number_format($price, 2) }}</td>
+                                    <td class="text-center py-4">Ksh.{{ number_format($price, 2) }}</td>
                                     <td class="text-center py-4">
                                         <form action="{{ route('cart.update', $item->id) }}" method="POST" class="flex items-center justify-center">
                                             @csrf
@@ -64,7 +64,7 @@
                                             <button type="submit" class="ml-2 text-sm text-blue-600 hover:text-blue-800">Update</button>
                                         </form>
                                     </td>
-                                    <td class="text-center py-4">${{ number_format($itemTotal, 2) }}</td>
+                                    <td class="text-center py-4">Ksh.{{ number_format($itemTotal, 2) }}</td>
                                     <td class="text-right py-4">
                                         <form action="{{ route('cart.remove', $item->id) }}" method="POST">
                                             @csrf
@@ -85,7 +85,7 @@
                     <h2 class="text-lg font-semibold mb-4">Order Summary</h2>
                     <div class="flex justify-between mb-2">
                         <span>Subtotal</span>
-                        <span>${{ number_format($subtotal, 2) }}</span>
+                        <span>Ksh.{{ number_format($subtotal, 2) }}</span>
                     </div>
 
                     @if($coupon)
@@ -101,11 +101,11 @@
                                 // Ensure discount doesn't exceed subtotal
                                 $discountAmount = min($discountAmount, $subtotal);
                             @endphp
-                            <span>-${{ number_format($discountAmount, 2) }}</span>
+                            <span>-Ksh.{{ number_format($discountAmount, 2) }}</span>
                         </div>
                         <div class="flex justify-between mb-4 font-semibold">
                             <span>Total</span>
-                            <span>${{ number_format($subtotal - $discountAmount, 2) }}</span>
+                            <span>Ksh.{{ number_format($subtotal - $discountAmount, 2) }}</span>
                         </div>
                         <form action="{{ route('cart.removeCoupon') }}" method="POST" class="mb-4">
                             @csrf
@@ -114,7 +114,7 @@
                     @else
                         <div class="flex justify-between mb-4 font-semibold">
                             <span>Total</span>
-                            <span>${{ number_format($subtotal, 2) }}</span>
+                            <span>Ksh.{{ number_format($subtotal, 2) }}</span>
                         </div>
                         <form action="{{ route('cart.applyCoupon') }}" method="POST" class="mb-4">
                             @csrf

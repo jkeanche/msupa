@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled', 'refunded'])->default('pending');
             $table->decimal('total_amount', 12, 2);
             $table->decimal('discount_amount', 12, 2)->default(0.00);
+            $table->foreignId('store_id')->constrained()->onDelete('cascade');
             $table->foreignId('coupon_id')->nullable()->constrained()->onDelete('set null');
             $table->string('payment_method', 100)->nullable();
             $table->enum('payment_status', ['pending', 'paid', 'failed'])->default('pending');

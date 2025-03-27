@@ -8,7 +8,7 @@
         <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">M-Supa: Powering Supermarkets with Innovation, Efficiency, and Growth!.</p>
         <div class="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
             <div class="flex space-x-4">
-                <a href="{{route('register')}}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100">Get Started</a>
+                <a href="{{route('login')}}" class="bg-white text-blue-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100">Get Started</a>
                 <a href="#learn-more" class="border-2 border-white text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700">Learn More</a>
             </div>
             {{-- <a href="#" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">

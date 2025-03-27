@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class VendorMiddleware
 {
@@ -17,10 +18,14 @@ class VendorMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->hasRole('vendor')) {
-            return $next($request);
+        if (!Auth::check()) {
+            return redirect()->route('login');
         }
-        
-        return redirect()->route('home')->with('error', 'You do not have vendor access');
+
+        if (Auth::user()->role !== 'vendor') {
+            return redirect()->route('home')->with('error', 'You do not have vendor access');
+        }
+
+        return $next($request);
     }
 }

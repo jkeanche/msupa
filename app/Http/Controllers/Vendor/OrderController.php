@@ -15,13 +15,14 @@ class OrderController extends Controller
     {
         $store = Auth::user()->store;
         
+     
         $orderItems = OrderItem::where('store_id', $store->id)
             ->with(['order', 'product'])
             ->latest()
             ->get()
             ->groupBy('order_id');
             
-        return view('vendor.orders.index', compact('orderItems'));
+        return view('vendor.orders.index', compact('store','orderItems'));
     }
     
     public function show($orderId)
@@ -43,17 +44,6 @@ class OrderController extends Controller
         return view('vendor.orders.show', compact('order', 'orderItems', 'orderStatuses'));
     }
     
-    public function updateStatus(Request $request, $orderId)
-    {
-        $request->validate([
-            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
-            'comments' => 'nullable|string',
-        ]);
-        
-        $store = Auth::user()->store;
-    }
-
-
     public function updateStatus(Request $request, $orderId)
     {
         $request->validate([
@@ -86,5 +76,4 @@ class OrderController extends Controller
         
         return redirect()->back()->with('success', 'Order status updated successfully.');
     }
-
 }

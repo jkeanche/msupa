@@ -22,7 +22,7 @@
 <body>
     <div class="wrapper">
         <!-- Sidebar -->
-        @include('admin.partials.sidebar')
+        @include('partials.sidebars.admin')
         
         <div class="main-content">
             <!-- Top Navbar -->

@@ -15,7 +15,7 @@
 
 @if($banners->count() > 0)
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="swiper-container banner-slider">
+    <div class="swiper-container banner-slider relative">
         <div class="swiper-wrapper">
             @foreach($banners as $banner)
             <div class="swiper-slide">
@@ -42,6 +42,49 @@
 <!-- Swiper JS -->
 <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
+<style>
+    /* Custom styles for navigation buttons */
+    .banner-slider {
+        position: relative;
+    }
+    
+    .swiper-button-prev,
+    .swiper-button-next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        color: #000;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s;
+    }
+    
+    .swiper-button-prev:hover,
+    .swiper-button-next:hover {
+        background-color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .swiper-button-prev {
+        left: 10px;
+    }
+    
+    .swiper-button-next {
+        right: 10px;
+    }
+    
+    /* Modify the arrow size */
+    .swiper-button-prev:after,
+    .swiper-button-next:after {
+        font-size: 18px;
+    }
+</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

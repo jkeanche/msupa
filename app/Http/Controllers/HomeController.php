@@ -48,7 +48,7 @@ class HomeController extends Controller
             ->get();
             
         // Fetch categories for filtering
-        $categories = Category::all();
+        $categories = Category::take(6)->get();
         
         return view('index', compact(
             'banners',

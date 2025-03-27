@@ -21,7 +21,7 @@ class CheckRole
         }
 
         if (Auth::user()->role != $role) {
-            return redirect('home')->with('error', 'You do not have permission to access this page.');
+            return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
         }
 
         return $next($request);

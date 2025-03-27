@@ -23,7 +23,7 @@
             <a href="{{ route('admin.dashboard') }}" 
                 class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-700 text-white' : 'text-indigo-100 hover:bg-indigo-700' }}">
                 <i class="fas fa-chart-line w-5 h-5 mr-3"></i>
-                <span>Dashboard</span>
+                <span>My Dashboard</span>
             </a>
 
             <!-- Store Management Section -->

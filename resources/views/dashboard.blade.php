@@ -1,10 +1,10 @@
-<!-- filepath: c:\xampp\htdocs\msupa\resources\views\dashboard.blade.php -->
+
 @extends('layouts.app')
 
 @section('content')
 <div class="flex bg-gray-100">
     <!-- Sidebar -->
-    <div class="hidden md:flex md:flex-shrink-0">
+    {{-- <div class="hidden md:flex md:flex-shrink-0">
         <div class="flex flex-col w-64">
             <div class="flex flex-col flex-grow pt-5 overflow-y-auto bg-blue-800 border-r">
                 <div class="flex flex-col items-center flex-shrink-0 px-4">
@@ -78,7 +78,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
     
     <!-- Mobile menu button -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-blue-800 shadow-lg">

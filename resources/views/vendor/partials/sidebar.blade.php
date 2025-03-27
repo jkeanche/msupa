@@ -7,7 +7,7 @@
     <div class="flex items-center justify-between p-4 border-b border-emerald-500">
         <div class="flex items-center space-x-3">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-8 w-8">
-            <h1 class="text-xl font-bold">{{ auth()->user()->store->name }}</h1>
+            <h1 class="text-xl font-bold">{{ auth()->user()->store->name ?? 'Vendor Store' }}</h1>
         </div>
         <button @click="open = !open" class="lg:hidden text-white hover:text-emerald-200">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -53,14 +53,34 @@
                 <p class="px-4 text-xs font-semibold text-emerald-300 uppercase tracking-wider">Orders</p>
                 <div class="mt-3 space-y-1">
                     <a href="{{ route('vendor.orders.index') }}" 
-                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.orders.index') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
+                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.orders.index') && !request()->has('status') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
                         <i class="fas fa-shopping-cart w-5 h-5 mr-3"></i>
                         <span>All Orders</span>
                     </a>
                     <a href="{{ route('vendor.orders.pending') }}" 
-                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.orders.pending') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
+                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.orders.pending') || (request()->routeIs('vendor.orders.status') && request('status') == 'pending') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
                         <i class="fas fa-clock w-5 h-5 mr-3"></i>
                         <span>Pending Orders</span>
+                    </a>
+                    <a href="{{ route('vendor.orders.processing') }}" 
+                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.orders.processing') || (request()->routeIs('vendor.orders.status') && request('status') == 'processing') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
+                        <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                        <span>Processing</span>
+                    </a>
+                    <a href="{{ route('vendor.orders.shipped') }}" 
+                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.orders.shipped') || (request()->routeIs('vendor.orders.status') && request('status') == 'shipped') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
+                        <i class="fas fa-truck w-5 h-5 mr-3"></i>
+                        <span>Shipped</span>
+                    </a>
+                    <a href="{{ route('vendor.orders.delivered') }}" 
+                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.orders.delivered') || (request()->routeIs('vendor.orders.status') && request('status') == 'delivered') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
+                        <i class="fas fa-check-circle w-5 h-5 mr-3"></i>
+                        <span>Delivered</span>
+                    </a>
+                    <a href="{{ route('vendor.orders.cancelled') }}" 
+                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.orders.cancelled') || (request()->routeIs('vendor.orders.status') && request('status') == 'cancelled') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
+                        <i class="fas fa-ban w-5 h-5 mr-3"></i>
+                        <span>Cancelled</span>
                     </a>
                 </div>
             </div>
@@ -86,15 +106,15 @@
             <div class="pt-4">
                 <p class="px-4 text-xs font-semibold text-emerald-300 uppercase tracking-wider">Finance</p>
                 <div class="mt-3 space-y-1">
-                    <a href="{{ route('vendor.earnings') }}" 
-                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.earnings') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
-                        <i class="fas fa-money-bill-wave w-5 h-5 mr-3"></i>
-                        <span>Earnings</span>
-                    </a>
                     <a href="{{ route('vendor.withdrawals.index') }}" 
                         class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.withdrawals.*') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
                         <i class="fas fa-wallet w-5 h-5 mr-3"></i>
                         <span>Withdrawals</span>
+                    </a>
+                    <a href="{{ route('vendor.payments.index') }}" 
+                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.payments.*') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
+                        <i class="fas fa-money-bill-wave w-5 h-5 mr-3"></i>
+                        <span>Payments</span>
                     </a>
                 </div>
             </div>
@@ -103,15 +123,10 @@
             <div class="pt-4">
                 <p class="px-4 text-xs font-semibold text-emerald-300 uppercase tracking-wider">Settings</p>
                 <div class="mt-3 space-y-1">
-                    <a href="{{ route('vendor.profile.edit') }}" 
-                        class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.profile.*') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
-                        <i class="fas fa-store w-5 h-5 mr-3"></i>
-                        <span>Store Settings</span>
-                    </a>
                     <a href="{{ route('vendor.settings.index') }}" 
                         class="flex items-center px-4 py-3 text-sm rounded-lg {{ request()->routeIs('vendor.settings.*') ? 'bg-emerald-700 text-white' : 'text-emerald-100 hover:bg-emerald-700' }}">
                         <i class="fas fa-cog w-5 h-5 mr-3"></i>
-                        <span>Preferences</span>
+                        <span>Store Settings</span>
                     </a>
                 </div>
             </div>
@@ -129,8 +144,8 @@
                 </div>
             </div>
             <div class="flex items-center">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ auth()->user()->store->is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' }}">
-                    {{ auth()->user()->store->is_active ? 'Active' : 'Inactive' }}
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ auth()->user()->store->is_active ?? true ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' }}">
+                    {{ auth()->user()->store->is_active ?? true ? 'Active' : 'Inactive' }}
                 </span>
             </div>
         </div>

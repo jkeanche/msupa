@@ -28,7 +28,7 @@
                                                 {{ $category->products_count }} {{ Str::plural('product', $category->products_count) }}
                                             </span>
                                             <span class="px-2 py-1 text-xs font-semibold text-primary-600 bg-primary-100 rounded-full">
-                                                {{ $category->supermarket->name }}
+                                                {{ $category->store->name }}
                                             </span>
                                         </div>
                                     </div>

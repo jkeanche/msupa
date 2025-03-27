@@ -50,6 +50,8 @@ Route::resource('categories', CategoryController::class)->only(['index', 'show']
 Route::resource('stores', StoreController::class)->only(['index', 'show']);
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/skiza-tunes', [App\Http\Controllers\SkizaTuneController::class, 'index'])->name('skiza-tunes.index');
+Route::get('/skiza-tunes/{id}', [App\Http\Controllers\SkizaTuneController::class, 'show'])->name('skiza-tunes.show');
 
 // Cart routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -104,16 +106,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     
     // Vendor routes
-    Route::prefix('vendor')->name('vendor.')->middleware('role:vendor')->group(function () {
+    Route::prefix('vendor')->name('vendor.')->group(function () {
         Route::get('/dashboard', [VendorDashboardController::class, 'index'])->name('dashboard');
         Route::resource('products', VendorProductController::class);
         Route::resource('orders', VendorOrderController::class);
+        
+        // Order status routes
+        Route::get('/orders/status/{status}', [VendorOrderController::class, 'index'])->name('orders.status');
+        Route::get('/orders/status/pending', [VendorOrderController::class, 'index'])->name('orders.pending')->defaults('status', 'pending');
+        Route::get('/orders/status/processing', [VendorOrderController::class, 'index'])->name('orders.processing')->defaults('status', 'processing');
+        Route::get('/orders/status/shipped', [VendorOrderController::class, 'index'])->name('orders.shipped')->defaults('status', 'shipped');
+        Route::get('/orders/status/delivered', [VendorOrderController::class, 'index'])->name('orders.delivered')->defaults('status', 'delivered');
+        Route::get('/orders/status/cancelled', [VendorOrderController::class, 'index'])->name('orders.cancelled')->defaults('status', 'cancelled');
+        
+        Route::patch('/orders/{order}/update-status', [VendorOrderController::class, 'updateStatus'])->name('orders.update-status');
+        Route::get('/orders/{order}/invoice', [VendorOrderController::class, 'invoice'])->name('orders.invoice');
         Route::resource('coupons', VendorCouponController::class);
         Route::resource('withdrawals', VendorWithdrawalController::class);
         Route::resource('inventory', VendorInventoryController::class);
         Route::resource('categories', VendorCategoryController::class);
         Route::resource('customers', VendorCustomerController::class);
         Route::resource('deliveries', VendorDeliveryController::class);
+        Route::patch('/deliveries/{delivery}/update-status', [VendorDeliveryController::class, 'updateStatus'])->name('deliveries.update_status');
         Route::resource('promotions', VendorPromotionController::class);
         Route::resource('featured', VendorFeaturedController::class);
         Route::resource('payments', VendorPaymentController::class);
@@ -123,9 +137,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
     
     // Admin routes
-    Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
         Route::resource('users', UserController::class);
+        Route::resource('roles', RoleController::class);
         Route::resource('stores', AdminStoreController::class); 
         Route::resource('products', ProductController::class);
         Route::resource('orders', OrderController::class);
@@ -135,13 +150,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('settings', SettingsController::class);
         Route::resource('reports', ReportController::class);
         Route::resource('notifications', NotificationController::class);
-        Route::resource('roles', RoleController::class);
         Route::resource('banners', BannerController::class);
         Route::resource('featured', AdminFeaturedController::class);
         Route::resource('promotions', AdminPromotionController::class);
         Route::resource('analytics', AdminAnalyticsController::class);
         Route::resource('payments', AdminPaymentController::class);
         Route::resource('subscriptions', AdminSubscriptionController::class);
+        Route::resource('skiza-tunes', App\Http\Controllers\Admin\SkizaTuneController::class);
         // Add other admin routes as needed
     });
 });
@@ -156,7 +171,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Vendor Routes
-    Route::group(['prefix' => 'vendor', 'middleware' => ['vendor'], 'as' => 'vendor.'], function () {
+    Route::group(['prefix' => 'vendor', 'as' => 'vendor.'], function () {
         Route::get('/dashboard', function () {
             return view('vendor.dashboard');
         })->name('dashboard');
