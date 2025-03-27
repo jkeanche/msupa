@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     './resources/**/*.blade.php',
     './resources/**/*.js',
@@ -75,8 +75,7 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
+    tailwindcss(),
+    // Import plugins using dynamic imports for ES module compatibility
   ],
 }
-

@@ -101,10 +101,10 @@
                     </div>
                     
                     <div class="form-group mb-3">
-                        <label for="featured">Featured Product</label>
-                        <select name="featured" id="featured" class="form-control">
-                            <option value="0" {{ old('featured', $product->featured) == 0 ? 'selected' : '' }}>No</option>
-                            <option value="1" {{ old('featured', $product->featured) == 1 ? 'selected' : '' }}>Yes</option>
+                        <label for="is_featured">Featured Product</label>
+                        <select name="is_featured" id="is_featured" class="form-control">
+                            <option value="0" {{ old('is_featured', $product->is_featured) == 0 ? 'selected' : '' }}>No</option>
+                            <option value="1" {{ old('is_featured', $product->is_featured) == 1 ? 'selected' : '' }}>Yes</option>
                         </select>
                     </div>
                 </div>

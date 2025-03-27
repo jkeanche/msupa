@@ -42,8 +42,8 @@
                     
                     <div class="d-flex justify-content-between align-items-center mt-2">
                         <h5>Featured</h5>
-                        <span class="badge {{ $product->featured ? 'bg-warning' : 'bg-secondary' }}">
-                            {{ $product->featured ? 'Yes' : 'No' }}
+                        <span class="badge {{ $product->is_featured ? 'bg-warning' : 'bg-secondary' }}">
+                            {{ $product->is_featured ? 'Yes' : 'No' }}
                         </span>
                     </div>
                 </div>

@@ -15,7 +15,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = 'dashboard';
+    protected $redirectTo = 'user.dashboard';
 
     /**
      * Create a new controller instance.
@@ -49,10 +49,10 @@ class LoginController extends Controller
         switch ($user->role) {
             case 'admin':
                 return redirect()->route('admin.dashboard');
-            case 'supermarket_owner':
+            case 'vendor':
                 return redirect()->route('vendor.dashboard');
             default:
-                return redirect()->route('dashboard');
+                return redirect()->route('user.dashboard');
         }
     }
 

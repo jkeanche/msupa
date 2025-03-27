@@ -50,12 +50,14 @@ class CategoryController extends Controller
         elseif ($user->isAdmin() && $request->has('store_id')) {
             $store = Store::findOrFail($request->store_id);
             $categories = $store->categories()->withCount('products')->orderBy('display_order')->get();
-            return view('admin.categories.index', compact('categories', 'store'));
+            $parentCategories = $store->categories()->whereNull('parent_id')->get();
+            return view('admin.categories.index', compact('categories', 'store', 'parentCategories'));
         } 
         // For admins viewing all
         elseif ($user->isAdmin()) {
             $categories = Category::with('store')->withCount('products')->paginate(20);
-            return view('admin.categories.index', compact('categories'));
+            $parentCategories = Category::whereNull('parent_id')->get();
+            return view('admin.categories.index', compact('categories', 'parentCategories'));
         } 
         else {
             return abort(403, 'Unauthorized action.');

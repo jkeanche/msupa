@@ -94,7 +94,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     
     // User routes
     Route::prefix('user')->name('user.')->group(function () {
-        Route::get('/dashboard', [App\Http\Controllers\User\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/orders', [UserOrderController::class, 'index'])->name('orders');
@@ -102,27 +101,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/wallet', [WalletController::class, 'index'])->name('wallet');
         Route::post('/wallet/deposit', [WalletController::class, 'deposit'])->name('wallet.deposit');
     });
-    
-    // Vendor routes
-    Route::prefix('vendor')->name('vendor.')->middleware('role:vendor')->group(function () {
-        Route::get('/dashboard', [VendorDashboardController::class, 'index'])->name('dashboard');
-        Route::resource('products', VendorProductController::class);
-        Route::resource('orders', VendorOrderController::class);
-        Route::resource('coupons', VendorCouponController::class);
-        Route::resource('withdrawals', VendorWithdrawalController::class);
-        Route::resource('inventory', VendorInventoryController::class);
-        Route::resource('categories', VendorCategoryController::class);
-        Route::resource('customers', VendorCustomerController::class);
-        Route::resource('deliveries', VendorDeliveryController::class);
-        Route::resource('promotions', VendorPromotionController::class);
-        Route::resource('featured', VendorFeaturedController::class);
-        Route::resource('payments', VendorPaymentController::class);
-        Route::resource('subscription', VendorSubscriptionController::class);
-        Route::resource('reports', VendorReportController::class);
-        Route::resource('settings', VendorSettingController::class);
-    });
-    
-    // Admin routes
+});
+
+// Dashboard Routes
+Route::middleware(['auth'])->group(function () {
+    // Admin Routes
     Route::prefix('admin')->name('admin.')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('dashboard');
         Route::resource('users', UserController::class);
@@ -144,32 +127,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('subscriptions', AdminSubscriptionController::class);
         // Add other admin routes as needed
     });
-});
-
-// Dashboard Routes
-Route::middleware(['auth'])->group(function () {
-    // Admin Routes
-    Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('dashboard');
+    
+    // Vendor routes
+    Route::prefix('vendor')->name('vendor.')->middleware('role:vendor')->group(function () {
+        Route::get('/dashboard', [VendorDashboardController::class, 'index'])->name('dashboard');
+        Route::resource('products', VendorProductController::class);
+        Route::resource('orders', VendorOrderController::class);
+        Route::resource('coupons', VendorCouponController::class);
+        Route::resource('withdrawals', VendorWithdrawalController::class);
+        Route::resource('inventory', VendorInventoryController::class);
+        Route::resource('categories', VendorCategoryController::class);
+        Route::resource('customers', VendorCustomerController::class);
+        Route::resource('deliveries', VendorDeliveryController::class);
+        Route::resource('promotions', VendorPromotionController::class);
+        Route::resource('featured', VendorFeaturedController::class);
+        Route::resource('payments', VendorPaymentController::class);
+        Route::resource('subscription', VendorSubscriptionController::class);
+        Route::resource('reports', VendorReportController::class);
+        Route::resource('settings', VendorSettingController::class);
     });
-
-    // Vendor Routes
-    Route::group(['prefix' => 'vendor', 'middleware' => ['vendor'], 'as' => 'vendor.'], function () {
-        Route::get('/dashboard', function () {
-            return view('vendor.dashboard');
-        })->name('dashboard');
-    });
-
-    // User Routes
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-    // Profile Routes
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-
-    Route::resource('orders', OrderController::class);
 });

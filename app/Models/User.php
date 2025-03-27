@@ -16,7 +16,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'role', // admin, supermarket_owner, customer
+        'role', // admin, vendor, customer
         'phone',
         'address',
         'profile_picture',
@@ -55,13 +55,13 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Check if user has vendor role (alias for supermarket_owner)
+     * Check if user has vendor role (alias for vendor)
      *
      * @return bool
      */
     public function isVendor()
     {
-        return $this->role === 'supermarket_owner' || $this->role === 'vendor';
+        return $this->role === 'vendor' || $this->role === 'vendor';
     }
 
     public function isAdmin()
@@ -71,7 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isSupermarketOwner()
     {
-        return $this->role === 'supermarket_owner';
+        return $this->role === 'vendor';
     }
 
     public function isCustomer()

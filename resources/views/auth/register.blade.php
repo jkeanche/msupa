@@ -34,7 +34,7 @@
                     <select id="role" name="role" required
                         class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('role') border-red-500 @enderror">
                         <option value="">Signup as..</option>
-                        <option value="supermarket_owner" {{ old('role') == 'supermarket_owner' ? 'selected' : '' }}>Supermarket</option>
+                        <option value="vendor" {{ old('role') == 'vendor' ? 'selected' : '' }}>Supermarket</option>
                         <option value="customer" {{ old('role') == 'customer' ? 'selected' : '' }}>Customer</option>
                     </select>
                     @error('role')

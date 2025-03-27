@@ -17,7 +17,7 @@ class VendorMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->hasRole('supermarket_owner')) {
+        if (Auth::check() && Auth::user()->hasRole('vendor')) {
             return $next($request);
         }
         

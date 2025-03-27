@@ -18,7 +18,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:admin,supermarket_owner,customer'],
+            'role' => ['required', 'string', 'in:admin,vendor,customer'],
         ]);
 
         $user = User::create([
@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
         switch ($user->role) {
             case 'admin':
                 return redirect()->route('admin.dashboard');
-            case 'supermarket_owner':
+            case 'vendor':
                 return redirect()->route('vendor.dashboard');
             default:
                 return redirect()->route('user.dashboard');

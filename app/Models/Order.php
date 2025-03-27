@@ -15,23 +15,20 @@ class Order extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'customer_id',
+        'user_id',
         'store_id',
         'order_number',
-        'status', // pending, processing, shipped, delivered, cancelled
-        'subtotal',
-        'tax',
-        'delivery_fee',
-        'discount',
-        'total',
+        'status', // pending, processing, shipped, delivered, cancelled, refunded
+        'total_amount',
+        'discount_amount',
+        'coupon_id',
+        'shipping_cost',
         'payment_method',
         'payment_status', // pending, paid, failed
-        'payment_id',
         'shipping_address',
         'billing_address',
+        'shipping_method',
         'notes',
-        'tracking_number',
-        'delivered_at',
     ];
 
     /**
@@ -40,13 +37,9 @@ class Order extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'subtotal' => 'decimal:2',
-        'tax' => 'decimal:2',
-        'delivery_fee' => 'decimal:2',
-        'discount' => 'decimal:2',
-        'total' => 'decimal:2',
-        'shipping_address' => 'array',
-        'billing_address' => 'array',
+        'total_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'shipping_cost' => 'decimal:2',
         'delivered_at' => 'datetime',
     ];
 
@@ -55,7 +48,7 @@ class Order extends Model
      */
     public function customer()
     {
-        return $this->belongsTo(User::class, 'customer_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
@@ -101,6 +94,7 @@ class Order extends Model
             'shipped' => 'indigo',
             'delivered' => 'green',
             'cancelled' => 'red',
+            'refunded' => 'purple',
         ];
 
         return $colors[$this->status] ?? 'gray';
