@@ -1,48 +1,48 @@
-@extends('admin.layouts.app')
+@extends('vendor.layouts.app')
 
-@section('title', 'Admin Dashboard')
+@section('title', 'Vendor Dashboard')
 
 @section('content')
 <div class="container mx-auto px-4 py-6">
     <!-- Page Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
-        <p class="mt-2 text-gray-600">Welcome back, {{ auth()->user()->name }}</p>
+        <h1 class="text-3xl font-bold text-gray-900">Store Dashboard</h1>
+        <p class="mt-2 text-gray-600">Welcome back, {{ auth()->user()->store->name }}</p>
     </div>
     
     <!-- Quick Stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Total Sales Card -->
-        <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg overflow-hidden">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="rounded-full bg-blue-500 bg-opacity-30 p-3">
-                        <i class="fas fa-dollar-sign text-2xl text-white"></i>
-                    </div>
-                    <div class="flex items-center text-blue-100">
-                        <span class="text-sm mr-1">+{{ $salesGrowth ?? '0' }}%</span>
-                        <i class="fas fa-arrow-up"></i>
-                    </div>
-                </div>
-                <h3 class="text-white text-4xl font-bold mb-2">{{ number_format($totalSales ?? 0) }}</h3>
-                <p class="text-blue-100">Total Revenue</p>
-            </div>
-        </div>
-
-        <!-- Orders Card -->
+        <!-- Revenue Card -->
         <div class="bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-xl shadow-lg overflow-hidden">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
                     <div class="rounded-full bg-emerald-500 bg-opacity-30 p-3">
-                        <i class="fas fa-shopping-cart text-2xl text-white"></i>
+                        <i class="fas fa-dollar-sign text-2xl text-white"></i>
                     </div>
                     <div class="flex items-center text-emerald-100">
-                        <span class="text-sm mr-1">{{ $orderGrowth ?? '0' }}%</span>
-                        <i class="fas fa-chart-line"></i>
+                        <span class="text-sm mr-1">+{{ $revenueGrowth ?? '0' }}%</span>
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+                <h3 class="text-white text-4xl font-bold mb-2">{{ number_format($totalRevenue ?? 0) }}</h3>
+                <p class="text-emerald-100">Total Revenue</p>
+            </div>
+        </div>
+
+        <!-- Orders Card -->
+        <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg overflow-hidden">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="rounded-full bg-blue-500 bg-opacity-30 p-3">
+                        <i class="fas fa-shopping-cart text-2xl text-white"></i>
+                    </div>
+                    <div class="flex items-center text-blue-100">
+                        <span class="text-sm mr-1">{{ $pendingOrders ?? 0 }}</span>
+                        <span class="text-xs">pending</span>
                     </div>
                 </div>
                 <h3 class="text-white text-4xl font-bold mb-2">{{ number_format($totalOrders ?? 0) }}</h3>
-                <p class="text-emerald-100">Total Orders</p>
+                <p class="text-blue-100">Total Orders</p>
             </div>
         </div>
 
@@ -54,15 +54,16 @@
                         <i class="fas fa-box text-2xl text-white"></i>
                     </div>
                     <div class="flex items-center text-purple-100">
-                        <span class="text-sm">{{ $totalProducts ?? 0 }}</span>
+                        <span class="text-sm">{{ $lowStockProducts ?? 0 }}</span>
+                        <span class="text-xs ml-1">low stock</span>
                     </div>
                 </div>
-                <h3 class="text-white text-4xl font-bold mb-2">{{ $activeProducts ?? 0 }}</h3>
-                <p class="text-purple-100">Active Products</p>
+                <h3 class="text-white text-4xl font-bold mb-2">{{ $totalProducts ?? 0 }}</h3>
+                <p class="text-purple-100">Total Products</p>
             </div>
         </div>
 
-        <!-- Users Card -->
+        <!-- Customers Card -->
         <div class="bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg overflow-hidden">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
@@ -70,12 +71,12 @@
                         <i class="fas fa-users text-2xl text-white"></i>
                     </div>
                     <div class="flex items-center text-amber-100">
-                        <span class="text-sm mr-1">+{{ $newUsers ?? 0 }}</span>
+                        <span class="text-sm mr-1">+{{ $newCustomers ?? 0 }}</span>
                         <span class="text-xs">today</span>
                     </div>
                 </div>
-                <h3 class="text-white text-4xl font-bold mb-2">{{ number_format($totalUsers ?? 0) }}</h3>
-                <p class="text-amber-100">Total Users</p>
+                <h3 class="text-white text-4xl font-bold mb-2">{{ number_format($totalCustomers ?? 0) }}</h3>
+                <p class="text-amber-100">Total Customers</p>
             </div>
         </div>
     </div>
@@ -85,39 +86,39 @@
         <!-- Sales Chart -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="flex items-center justify-between p-6 border-b">
-                <h3 class="text-lg font-semibold text-gray-900">Sales Overview</h3>
+                <h3 class="text-lg font-semibold text-gray-900">Revenue Overview</h3>
                 <div class="flex space-x-2">
-                    <button class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-600">Weekly</button>
+                    <button class="px-3 py-1 text-sm rounded-full bg-emerald-100 text-emerald-600">Weekly</button>
                     <button class="px-3 py-1 text-sm rounded-full text-gray-600 hover:bg-gray-100">Monthly</button>
                 </div>
             </div>
             <div class="p-6">
-                <canvas id="salesChart" class="w-full h-64"></canvas>
+                <canvas id="revenueChart" class="w-full h-64"></canvas>
             </div>
         </div>
 
-        <!-- Orders by Status -->
+        <!-- Top Products -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="flex items-center justify-between p-6 border-b">
-                <h3 class="text-lg font-semibold text-gray-900">Orders by Status</h3>
-                <button class="text-blue-600 hover:text-blue-700">
+                <h3 class="text-lg font-semibold text-gray-900">Top Products</h3>
+                <button class="text-emerald-600 hover:text-emerald-700">
                     <i class="fas fa-download"></i>
                 </button>
             </div>
             <div class="p-6">
-                <canvas id="ordersChart" class="w-full h-64"></canvas>
+                <canvas id="productsChart" class="w-full h-64"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Recent Activity Section -->
+    <!-- Recent Orders and Inventory Alerts -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Recent Orders -->
         <div class="lg:col-span-2">
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="flex items-center justify-between p-6 border-b">
                     <h3 class="text-lg font-semibold text-gray-900">Recent Orders</h3>
-                    <a href="{{ route('admin.orders.index') }}" class="text-blue-600 hover:text-blue-700">View All</a>
+                    <a href="{{ route('vendor.orders.index') }}" class="text-emerald-600 hover:text-emerald-700">View All</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
@@ -162,11 +163,11 @@
             </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- Inventory Alerts -->
         <div class="lg:col-span-1">
             <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                 <div class="flex items-center justify-between p-6 border-b">
-                    <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">Inventory Alerts</h3>
                     <button class="text-gray-400 hover:text-gray-500">
                         <i class="fas fa-ellipsis-v"></i>
                     </button>
@@ -174,31 +175,32 @@
                 <div class="p-6">
                     <div class="flow-root">
                         <ul class="-mb-8">
-                            @forelse($userActivities ?? [] as $activity)
+                            @forelse($lowStockAlerts ?? [] as $alert)
                             <li>
                                 <div class="relative pb-8">
                                     @if(!$loop->last)
                                     <span class="absolute top-4 left-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
                                     @endif
-                                    <div class="relative flex space-x-3">
+                                    <div class="relative flex items-center space-x-3">
                                         <div>
-                                            <span class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center ring-8 ring-white">
-                                                <i class="fas fa-user-circle text-white"></i>
+                                            <span class="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center ring-8 ring-white">
+                                                <i class="fas fa-exclamation-triangle text-white"></i>
                                             </span>
                                         </div>
-                                        <div class="min-w-0 flex-1 pt-1.5 flex justify-between space-x-4">
-                                            <div>
-                                                <p class="text-sm text-gray-500">{{ $activity->description }}</p>
-                                            </div>
-                                            <div class="text-right text-sm whitespace-nowrap text-gray-500">
-                                                <time>{{ $activity->created_at->diffForHumans() }}</time>
-                                            </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-sm text-gray-900 font-medium">{{ $alert->product->name }}</div>
+                                            <div class="text-sm text-gray-500">Only {{ $alert->quantity }} units left</div>
+                                        </div>
+                                        <div>
+                                            <a href="{{ route('vendor.products.edit', $alert->product) }}" class="text-emerald-600 hover:text-emerald-700">
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </li>
                             @empty
-                            <li class="text-center text-gray-500 py-4">No recent activity</li>
+                            <li class="text-center text-gray-500 py-4">No inventory alerts</li>
                             @endforelse
                         </ul>
                     </div>
@@ -213,21 +215,21 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Sales Chart
-    const salesCtx = document.getElementById('salesChart').getContext('2d');
-    new Chart(salesCtx, {
+    // Revenue Chart
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(revenueCtx, {
         type: 'line',
         data: {
             labels: {!! json_encode($chartLabels ?? array_map(function($i) { return 'Week ' . $i; }, range(1, 7))) !!},
             datasets: [{
-                label: 'Sales',
-                data: {!! json_encode($chartData ?? [65, 59, 80, 81, 56, 55, 40]) !!},
+                label: 'Revenue',
+                data: {!! json_encode($revenueData ?? [650, 590, 800, 810, 560, 550, 400]) !!},
                 fill: true,
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderColor: 'rgb(16, 185, 129)',
                 tension: 0.4,
                 pointRadius: 4,
-                pointBackgroundColor: 'rgb(59, 130, 246)'
+                pointBackgroundColor: 'rgb(16, 185, 129)'
             }]
         },
         options: {
@@ -255,21 +257,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Orders Chart
-    const ordersCtx = document.getElementById('ordersChart').getContext('2d');
-    new Chart(ordersCtx, {
-        type: 'doughnut',
+    // Top Products Chart
+    const productsCtx = document.getElementById('productsChart').getContext('2d');
+    new Chart(productsCtx, {
+        type: 'bar',
         data: {
-            labels: ['Completed', 'Pending', 'Processing', 'Cancelled'],
+            labels: {!! json_encode($topProductNames ?? ['Product 1', 'Product 2', 'Product 3', 'Product 4', 'Product 5']) !!},
             datasets: [{
-                data: {!! json_encode($orderStatusData ?? [30, 20, 25, 15]) !!},
+                label: 'Sales',
+                data: {!! json_encode($topProductSales ?? [300, 250, 200, 150, 100]) !!},
                 backgroundColor: [
-                    'rgb(34, 197, 94)',
-                    'rgb(234, 179, 8)',
-                    'rgb(59, 130, 246)',
-                    'rgb(239, 68, 68)'
+                    'rgba(16, 185, 129, 0.8)',
+                    'rgba(16, 185, 129, 0.7)',
+                    'rgba(16, 185, 129, 0.6)',
+                    'rgba(16, 185, 129, 0.5)',
+                    'rgba(16, 185, 129, 0.4)'
                 ],
-                borderWidth: 0
+                borderRadius: 6
             }]
         },
         options: {
@@ -277,14 +281,23 @@ document.addEventListener('DOMContentLoaded', function() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom',
-                    labels: {
-                        usePointStyle: true,
-                        padding: 20
-                    }
+                    display: false
                 }
             },
-            cutout: '75%'
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        display: true,
+                        drawBorder: false
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
         }
     });
 });
