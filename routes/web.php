@@ -150,6 +150,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('settings', SettingsController::class);
         Route::resource('reports', ReportController::class);
+        Route::get('/reports/export', [ReportController::class, 'export'])->name('reports.export');
         Route::resource('notifications', NotificationController::class);
         Route::resource('banners', BannerController::class);
         Route::resource('featured', AdminFeaturedController::class);
